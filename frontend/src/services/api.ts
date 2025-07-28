@@ -1,13 +1,29 @@
 import axios from 'axios';
 
-//const API_BASE_URL = window.location.origin + "/api"; //process.env.REACT_APP_API_URL || 'http://localhost:8000';
-// const API_BASE_URL = window.location.origin.replace("3000", "8000"); //process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// API URL configuration for different environments
+const getApiBaseUrl = () => {
+  // Production: Use environment variable
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+  
+  // Development: Use local backend
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:8000';
+  }
+  
+  // Fallback: Relative path for same-domain deployment
+  return '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
-  baseURL: "/api",//API_BASE_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 60000, // 60 second timeout for serverless functions
 });
 
 export interface ReadingQuestion {
